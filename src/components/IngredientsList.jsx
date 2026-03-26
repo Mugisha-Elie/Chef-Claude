@@ -10,10 +10,12 @@ export default function IngredientsList(props){
                 className="list-disc list-inside decoration-gray-600 ml-3 text-lg text-gray-600"
                 >{props.ingredientList}</ul>
 
-                {props.ingredients.length >= 4 && <div 
+                {props.ingredients.length >= 4 && <div
                 className="bg-[#F0EFEB] rounded-lg p-5 grid grid-cols-2 mt-10"
                 >
-                    <div className="space-y-1">
+                    <div 
+                    ref={props.ref}
+                    className="space-y-1">
                         <h2 className="font-Inter text-xl">Ready for a recipe?</h2>
                         <p className="font-Inter font-light text-gray-500 text-sm">Generate a recipe from your list of ingredients</p>
                     </div>

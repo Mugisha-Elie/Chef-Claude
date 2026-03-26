@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect, useRef} from "react";
 import IngredientsList from "./IngredientsList";
 import ClaudeRecipe from "./ClaudeRecipe";
 import { getRecipeFromGroq } from "../ai";
@@ -6,19 +6,26 @@ import { getRecipeFromGroq } from "../ai";
 export default function Main(){
     const [ingredients, setIngredients] = useState([]);
     const [recipe, setRecipe] = useState("");
+    const recipeSection = useRef(null);
 
     function addIngredient(formData){
         const newIngredient = formData.get("ingredient");
         setIngredients(ingredients => [newIngredient, ...ingredients]);
     }
 
-    const ingredientList = ingredients.map(ingredient => <li>{ingredient}</li>)
+    const ingredientList = ingredients.map((ingredient, index) => <li key={index}>{ingredient}</li>)
 
     async function getRecipe(){
         // setIsShown(prevValue => !prevValue)
         const recipeMarkdown = await getRecipeFromGroq(ingredients)
         setRecipe(recipeMarkdown);
     }
+
+    useEffect(() => {
+        if(recipe && recipeSection) recipeSection.current.scrollIntoView({behavior: "smooth"})
+    }, [recipe])
+
+
 
 
     return (
@@ -36,7 +43,7 @@ export default function Main(){
                 className="px-3 py-2 bg-black text-gray-300 border rounded-lg">+ Add Ingredient</button>
             </form>
 
-            {ingredients.length > 0 && <IngredientsList ingredients={ingredients} ingredientList={ingredientList} toggle={getRecipe}/>}
+            {ingredients.length > 0 && <IngredientsList ref={recipeSection} ingredients={ingredients} ingredientList={ingredientList} toggle={getRecipe}/>}
             {recipe && <ClaudeRecipe recipe={recipe}/> }
         </main>
     )
